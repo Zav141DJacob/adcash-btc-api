@@ -1,3 +1,12 @@
+## Setup
+Make sure you have PHP version 8.1 and composer installed. 
+See composer [documentation](https://getcomposer.org/) for installation.
+
+
+## Testing
+Run php artisan test.
+
+
 install php (v8.1)
 install mysql server
 

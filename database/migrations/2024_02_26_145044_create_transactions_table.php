@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->string();
-            $table->double('amount', 8, 8);
-            $spent->boolean('spent');
-            $table->timestampsTz();
+            $table->uuid('id')->primary();
+            $table->float('amount', 10, 8);
+            $table->boolean('spent')->default(false);
+            $table->timestamp('created_at');
         });
     }
 

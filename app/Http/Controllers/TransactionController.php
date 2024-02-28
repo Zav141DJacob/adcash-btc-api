@@ -2,64 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransactionStoreRequest;
+use App\Http\Services\ExchangeRateService;
+use App\Http\Services\TransferService;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
+    private TransferService $transferService;
+
+    private ExchangeRateService $balanceService;
+
+    public function __construct(ExchangeRateService $balanceService, TransferService $transferService)
+    {
+        $this->balanceService = $balanceService;
+        $this->transferService = $transferService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return Transaction::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(TransactionStoreRequest $request)
     {
-        //
-    }
+        $validated = $request->validated();
+        try {
+            $btc_amount = $validated['amount'] / $this->balanceService->getConversionRate();
+        } catch (Exception $exception) {
+            throw ValidationException::withMessages([
+                'amount' => "Error retrieving conversion rate"
+            ]);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        try {
+            $this->transferService->transfer($btc_amount);
+        } catch(Exception $exception) {
+            throw ValidationException::withMessages([
+                'amount' => $exception->getMessage()
+            ]);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaction $transaction)
-    {
-        //
     }
 }
