@@ -1,17 +1,45 @@
 ## Setup
-Make sure you have PHP version 8.1 and composer installed. 
-See composer [documentation](https://getcomposer.org/) for installation.
+Make sure you have PHP version 8.1, MySQL database and [composer](https://getcomposer.org/) installed. 
 
+Copy the `.env.example` into a `.env` file and change the database username and password (DB_USERNAME and DB_PASSWORD) accordingly
+
+## Linux
+
+### Installation
+
+`sudo apt-get install php php-xml php-curl php-mysql mysql-server`
+
+`composer update`
+
+### Running the project
+
+`php artisan serve`
+
+#### With docker:
+
+`php artisan sail:install`
+
+`./vendor/bin/sail up -d`
 
 ## Testing
-Run php artisan test.
+
+`php artisan test`
 
 
-install php (v8.1)
-install mysql server
+## Available routes
 
+### GET
 
-@php -r "file_exists('.env') || copy('.env.example', '.env');"
-php artisan package:discover --ansi
-php artisan vendor:publish --tag=laravel-assets --ansi --force
-php artisan key:generate --ansi
+`/api/balance` - view current balance in BTC and EUR
+
+`/api/transactions` - view all transactions
+
+### POST
+
+`/api/transactions` - creates a transfer from your unspent transactions
+
+Request body example: 
+```json 
+{
+    "amount": 5
+}
